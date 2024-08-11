@@ -2,11 +2,12 @@
 
 import fon.njt.mockfon.model.User;
 import fon.njt.mockfon.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
+import javax.transaction.Transactional;
+
+ @Service
 public class UserService {
 
     @Autowired
