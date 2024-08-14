@@ -13,11 +13,6 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    @Transactional
-    public User registerUser(User user){
-        return userRepository.save(user);
-    }
-
     public User findUserbByID(Long userId){
         return userRepository.findById(userId).orElseThrow(()->new RuntimeException("User not found"));
     }

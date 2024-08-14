@@ -1,4 +1,5 @@
 package fon.njt.mockfon.controller;
+import fon.njt.mockfon.dto.AuthenticationResponse;
 import fon.njt.mockfon.dto.LoginRequest;
 import fon.njt.mockfon.dto.RegisterRequest;
 import fon.njt.mockfon.service.AuthService;
@@ -26,9 +27,8 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        return ResponseEntity.status(HttpStatus.OK).body("User Login Successful");
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
+        return authService.login(loginRequest);
     }
-
 
 }

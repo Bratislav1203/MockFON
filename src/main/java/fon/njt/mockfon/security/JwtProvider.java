@@ -1,7 +1,7 @@
 package fon.njt.mockfon.security;
 
 import fon.njt.mockfon.exception.MockFonException;
-import fon.njt.mockfon.model.User;
+import org.springframework.security.core.userdetails.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

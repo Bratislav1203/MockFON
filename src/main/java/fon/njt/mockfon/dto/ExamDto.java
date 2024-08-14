@@ -1,21 +1,16 @@
-package fon.njt.mockfon.model;
+package fon.njt.mockfon.dto;
 
+import fon.njt.mockfon.model.ExamSubject;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @Data
-@Entity
 @AllArgsConstructor
 @NoArgsConstructor
-public class Exam {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long examId;
-    @Enumerated(EnumType.STRING)
+public class ExamDto {
     private ExamSubject examSubject;
     private LocalDate dateAndTime;
     private LocalDate registrationStart;
