@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
