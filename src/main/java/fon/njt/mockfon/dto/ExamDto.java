@@ -11,8 +11,10 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExamDto {
-    private ExamSubject examSubject;
-    private LocalDate dateAndTime;
-    private LocalDate registrationStart;
-    private LocalDate registrationEnd;
+    private String subject;
+    private String date;
+    private String time;
+    private String registrationStart;
+    private String registrationEnd;
+    private int price;
 }

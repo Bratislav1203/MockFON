@@ -2,6 +2,7 @@ package fon.njt.mockfon.controller;
 
 import fon.njt.mockfon.dto.ExamDto;
 import fon.njt.mockfon.model.Exam;
+import fon.njt.mockfon.model.ExamSubject;
 import fon.njt.mockfon.service.ExamService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +26,12 @@ public class ExamController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String, Object>> getExamById(@PathVariable Long id) {
+    public ResponseEntity<Exam> getExamById(@PathVariable Long id) {
         Exam exam = examService.findExamById(id);
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Exam retrieved successfully");
         response.put("exam", exam);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(exam);
     }
 
     @PostMapping

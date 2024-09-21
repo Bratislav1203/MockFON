@@ -17,8 +17,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
-    @NotBlank(message = "Username cannot be null or empty")
-    private String username;
     private String password;
     @Email
     @NotBlank(message = "Email cannot be null or empty")

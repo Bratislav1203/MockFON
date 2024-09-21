@@ -42,20 +42,13 @@ public class JwtProvider {
 
     public String generateToken(Authentication authentication) {
         User principal = (User) authentication.getPrincipal();
+        System.out.println(Date.from(Instant.now().plusMillis(jwtExpirationMillis)));
         return Jwts.builder().setSubject(principal.getUsername())
                 .signWith(SignatureAlgorithm.RS256, getPrivateKey())
                 .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationMillis)))
                 .compact();
     }
 
-    public String generateTokenWithUserName(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(Date.from(Instant.now()))
-                .signWith(SignatureAlgorithm.RS256, getPrivateKey())
-                .setExpiration(Date.from(Instant.now().plusMillis(jwtExpirationMillis)))
-                .compact();
-    }
 
     private PrivateKey getPrivateKey() {
         try {
@@ -79,7 +72,7 @@ public class JwtProvider {
         }
     }
 
-    public String getUsernameFromJwt(String token) {
+    public String getEmailFromJwt(String token) {
         Claims claims = parser().setSigningKey(getPublicKey())
                 .parseClaimsJws(token)
                 .getBody();

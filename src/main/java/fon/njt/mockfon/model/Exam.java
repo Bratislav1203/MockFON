@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -17,7 +18,8 @@ public class Exam {
     private Long examId;
     @Enumerated(EnumType.STRING)
     private ExamSubject examSubject;
-    private LocalDate dateAndTime;
+    private int price;
+    private LocalDateTime dateAndTime;
     private LocalDate registrationStart;
     private LocalDate registrationEnd;
 }

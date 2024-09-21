@@ -25,8 +25,8 @@ public class ExamRegistrationService {
     }
 
     public ExamRegistration saveRegistration(ExamRegistration registration, Authentication authentication) {
-        String username = authentication.getName();
-        User user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
 
         if (registration.getExam() != null && registration.getExam().getExamId() != null) {
             Exam exam = examRepository.findById(registration.getExam().getExamId())
