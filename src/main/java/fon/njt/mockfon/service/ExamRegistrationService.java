@@ -9,7 +9,10 @@ import fon.njt.mockfon.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ExamRegistrationService {
@@ -24,21 +27,17 @@ public class ExamRegistrationService {
         this.examRepository = examRepository;
     }
 
-    public ExamRegistration saveRegistration(ExamRegistration registration, Authentication authentication) {
-        String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+    public ExamRegistration saveRegistration(Long examId, String userEmail) {
+        ExamRegistration examRegistration = new ExamRegistration();
 
-        if (registration.getExam() != null && registration.getExam().getExamId() != null) {
-            Exam exam = examRepository.findById(registration.getExam().getExamId())
-                    .orElseThrow(() -> new RuntimeException("Exam not found"));
-            registration.setExam(exam);
-        } else {
-            throw new IllegalArgumentException("Exam information is missing.");
-        }
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
+        Exam exam = examRepository.getById(examId);
 
-        registration.setUser(user);
+        examRegistration.setExam(exam);
+        examRegistration.setUser(user);
+        examRegistration.setRegistrationDate(LocalDate.now());
 
-        return registrationRepository.save(registration);
+        return registrationRepository.save(examRegistration);
     }
 
     public List<ExamRegistration> getAllRegistrations() {
@@ -50,7 +49,32 @@ public class ExamRegistrationService {
                 .orElseThrow(() -> new RuntimeException("Registration not found"));
     }
 
-    public void deleteRegistration(Long id) {
-        registrationRepository.deleteById(id);
+    public void deleteRegistration(String email, Long examId) {
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        var registration = registrationRepository.findByUser_UserIdAndExam_ExamId(user.getUserId(), examId)
+                .orElseThrow(() -> new RuntimeException("Registration not found"));
+
+        registrationRepository.delete(registration);
+    }
+
+    public List<Exam> getUserExams(String userEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Long userId = user.getUserId();
+
+        List<ExamRegistration> registrations = registrationRepository.findByUser_UserId(userId);
+
+        return registrations.stream()
+                .map(ExamRegistration::getExam)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<User> getUsersForExam(Long examId) {
+        return registrationRepository.findByExam_ExamId(examId).stream()
+                .map(ExamRegistration::getUser)
+                .collect(Collectors.toList());
     }
 }

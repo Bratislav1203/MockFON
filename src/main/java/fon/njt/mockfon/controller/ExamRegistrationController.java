@@ -1,6 +1,9 @@
 package fon.njt.mockfon.controller;
 
+import fon.njt.mockfon.dto.ExamRegistrationRequest;
+import fon.njt.mockfon.model.Exam;
 import fon.njt.mockfon.model.ExamRegistration;
+import fon.njt.mockfon.model.User;
 import fon.njt.mockfon.service.ExamRegistrationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,23 +23,33 @@ public class ExamRegistrationController {
     }
 
     @PostMapping
-    public ResponseEntity<ExamRegistration> createRegistration(@RequestBody ExamRegistration registration, Authentication authentication) {
-        ExamRegistration savedRegistration = registrationService.saveRegistration(registration, authentication);
-        return new ResponseEntity<>(savedRegistration, HttpStatus.CREATED);
+    public ResponseEntity<String> registerForExam(@RequestBody ExamRegistrationRequest request) {
+        try {
+            registrationService.saveRegistration(request.getExamId(), request.getEmail());
+            return ResponseEntity.ok("Registracija za ispit je uspešno obavljena.");
+        } catch (Exception e) {
+            System.err.println("Error during registration: " + e.getMessage());
+            return ResponseEntity.status(500).body("Došlo je do greške prilikom registracije za ispit.");
+        }
     }
+
     @GetMapping
-    public ResponseEntity<List<ExamRegistration>> getAllRegistrations() {
-        return ResponseEntity.ok(registrationService.getAllRegistrations());
+    public ResponseEntity<List<Exam>> getRegistrationsByEmail(@RequestParam String email) {
+        List<Exam> registrations = registrationService.getUserExams(email);
+        return ResponseEntity.ok(registrations);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ExamRegistration> getRegistrationById(@PathVariable Long id) {
-        return ResponseEntity.ok(registrationService.getRegistrationById(id));
-    }
+    @DeleteMapping
+    public ResponseEntity<Void> deleteRegistration(
+            @RequestParam String email,
+            @RequestParam Long examId) {
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRegistration(@PathVariable Long id) {
-        registrationService.deleteRegistration(id);
-        return ResponseEntity.ok().build();
+        registrationService.deleteRegistration(email, examId);
+        return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/{examId}/users")
+    public ResponseEntity<List<User>> getUsersForExam(@PathVariable Long examId) {
+        List<User> users = registrationService.getUsersForExam(examId);
+        return ResponseEntity.ok(users);
     }
 }

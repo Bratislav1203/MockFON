@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+        private Long userId;
     private String password;
     @Email
     @NotBlank(message = "Email cannot be null or empty")

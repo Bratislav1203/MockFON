@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ExamDto {
+    private Long id;
     private String subject;
     private String date;
     private String time;

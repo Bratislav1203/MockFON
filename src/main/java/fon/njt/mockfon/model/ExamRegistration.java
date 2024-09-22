@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -22,6 +23,6 @@ public class ExamRegistration {
     @ManyToOne
     @JoinColumn(name = "examId", nullable = false)
     private Exam exam;
-    private LocalDateTime registrationDate;
+    private LocalDate registrationDate;
 
 }
