@@ -5,6 +5,8 @@ import fon.njt.mockfon.model.NotificationEmail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import javax.mail.*;
@@ -16,6 +18,9 @@ import java.util.Properties;
 @Service
 @Slf4j
 public class MailService {
+
+    @Autowired
+    private JavaMailSender mailSender;
     private final String username;
     private final String password;
     private final MailContentBuilder mailContentBuilder;
@@ -28,38 +33,20 @@ public class MailService {
     }
 
     @Async
-    public void sendMail(NotificationEmail notificationEmail) {
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true");
-        prop.put("mail.smtp.connectiontimeout", "t1");
-        prop.put("mail.smtp.timeout", "t2");
-        Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+    public void sendMail(NotificationEmail notificationEmail, String mailTemplate) {
         try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setFrom("mockfon@gmail.com");
+            helper.setTo(notificationEmail.getRecipient());
+            helper.setSubject(notificationEmail.getSubject());
+            helper.setText(mailContentBuilder.build(notificationEmail.getBody(), mailTemplate), true); // true za HTML sadržaj
 
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("mockfon@gmail.com"));
-            message.setRecipients(
-                    Message.RecipientType.TO,
-                    InternetAddress.parse(notificationEmail.getRecipient())
-            );
-            message.setSubject(notificationEmail.getSubject());
-            message.setContent(mailContentBuilder.build(notificationEmail.getBody()), "text/html");
-            Transport.send(message);
+            mailSender.send(mimeMessage);
             System.out.println("Done");
-            log.info("Activation email sent! Recipient:" + notificationEmail.getRecipient());
 
         } catch (MessagingException e) {
             e.printStackTrace();
             throw new MailServiceException("Exception occurred when sending email.");
         }
-
-    }
-}
+    }}

@@ -44,7 +44,7 @@ public class AuthService {
 
     public void signup(RegisterRequest registerRequest) {
         if (userRepository.existsByEmail(registerRequest.getEmail())) {
-            throw new EmailAlreadyInUseException("Email already in use.");
+            throw new EmailAlreadyInUseException("Email je vec registrovan.");
         }
 
         User user = new User();
@@ -58,7 +58,7 @@ public class AuthService {
 
         String token = generateVerificationToken(user);
 
-        mailService.sendMail(new NotificationEmail("Please activate your account", user.getEmail(), "http://localhost:4200/verification/" + token));
+        mailService.sendMail(new NotificationEmail("Please activate your account", user.getEmail(), "http://localhost:4200/verification/" + token), "mailTemplate");
     }
 
     private String generateVerificationToken(User user) {

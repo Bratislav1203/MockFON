@@ -10,4 +10,7 @@ import lombok.NoArgsConstructor;
 public class ExamRegistrationRequest {
     private Long examId;
     private String email;
+    private String transactionId;
+    private String captureId;
+    private String payPalEmail;
 }

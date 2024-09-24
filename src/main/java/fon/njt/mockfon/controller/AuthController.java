@@ -3,6 +3,7 @@ import fon.njt.mockfon.dto.AuthenticationResponse;
 import fon.njt.mockfon.dto.LoginRequest;
 import fon.njt.mockfon.dto.RegisterRequest;
 import fon.njt.mockfon.dto.VerificationDTO;
+import fon.njt.mockfon.exception.EmailAlreadyInUseException;
 import fon.njt.mockfon.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,12 @@ public class AuthController {
 
     @PostMapping("signup")
     public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) {
-        authService.signup(registerRequest);
-        return ResponseEntity.status(HttpStatus.OK).body("User Registration Successful");
+        try {
+            authService.signup(registerRequest);
+            return ResponseEntity.status(HttpStatus.OK).body("User Registration Successful");
+        } catch (EmailAlreadyInUseException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        }
     }
 
 
@@ -43,7 +48,7 @@ public class AuthController {
         } catch (DisabledException ex) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nalog nije verifikovan. Verifikujte nalog i pokusajte ponovo.");
         } catch (AuthenticationException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nalog ne postoji.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Pogresni kredencijali.");
         } catch (Exception ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error processing request.");
         }

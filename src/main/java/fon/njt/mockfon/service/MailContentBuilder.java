@@ -10,9 +10,9 @@ import org.thymeleaf.context.Context;
 public class MailContentBuilder {
     private final TemplateEngine templateEngine;
 
-    public String build(String message) {
+    public String build(String message, String mailTemplate) {
         Context context = new Context();
         context.setVariable("message", message);
-        return templateEngine.process("mailTemplate", context);
+        return templateEngine.process(mailTemplate, context);
     }
 }
